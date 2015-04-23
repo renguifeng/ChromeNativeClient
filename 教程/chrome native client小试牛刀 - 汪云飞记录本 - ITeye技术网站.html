@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0039)http://wiselyman.iteye.com/blog/1157551 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站</title>
+    <meta name="description" content="一、环境准备  1、安装native client sdk      下载地址： http://commondatastorage.googleapis.com/nativeclient-mirror/nacl/nacl_sdk/naclsdk_win.exe  下载后安装在C:\native_client_sdk_0_5_1052  本次试验的两个关键目录project_templates,exa ...">
+    <meta name="keywords" content=" chrome native client小试牛刀">
+    <link rel="shortcut icon" href="http://wiselyman.iteye.com/images/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://wiselyman.iteye.com/open_search.xml" title="ITeye">
+    <link href="http://wiselyman.iteye.com/rss" rel="alternate" title="汪云飞记录本" type="application/rss+xml">
+    <link href="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/blog.css" media="screen" rel="stylesheet" type="text/css">
+<link href="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/black.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/ga.js"></script><script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/application.js" type="text/javascript"></script><style type="text/css"></style>
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-535605-1']);
+  _gaq.push(['_setDomainName', 'iteye.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+      <link href="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/SyntaxHighlighter.css" media="screen" rel="stylesheet" type="text/css">
+  <script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/shCoreCommon.js" type="text/javascript"></script>
+<script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/hotkey.js" type="text/javascript"></script>
+  <script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/code_favorites.js" type="text/javascript"></script>
+<script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/weiboshare.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <div id="header">
+      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="http://wiselyman.iteye.com/blog/1157551#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">招聘</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+      <div id="user_nav">
+      <a href="http://wiselyman.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://wiselyman.iteye.com/login">登录</a>
+    <a href="http://wiselyman.iteye.com/signup" class="nobg">注册</a>
+  </div>
+
+    </div>
+
+    <div id="page">
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="http://wiselyman.iteye.com/">汪云飞记录本</a></h1>
+        </div>
+        <div id="fd"></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class="blog_navbar_for"><a href="http://wiselyman.iteye.com/"><strong>博客</strong></a></li>
+            <li><a href="http://wiselyman.iteye.com/weibo">微博</a></li>
+            <li><a href="http://wiselyman.iteye.com/album">相册</a></li>
+            <li><a href="http://wiselyman.iteye.com/link">收藏</a></li>
+            <li><a href="http://wiselyman.iteye.com/blog/guest_book">留言</a></li>
+            <li><a href="http://wiselyman.iteye.com/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="http://wiselyman.iteye.com/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text" value="">
+              <input class="submit_search" type="submit" value="">
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style="display:none">
+  <a href="http://wiselyman.iteye.com/" class="p-author" target="_blank">wiselyman</a>
+</div>
+
+
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站.html">chrome native client小试牛刀</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://wiselyman.iteye.com/category/173758">chrome</a></li> </ul>
+        <div class="news_tag">&nbsp;</div>
+  </div>
+
+  <div id="blog_content" class="blog_content">
+    <p><strong><span style="font-size: medium;">一、环境准备</span></strong></p>
+<p><strong>1、安装native client sdk</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;下载地址： <a href="http://commondatastorage.googleapis.com/nativeclient-mirror/nacl/nacl_sdk/naclsdk_win.exe">http://commondatastorage.googleapis.com/nativeclient-mirror/nacl/nacl_sdk/naclsdk_win.exe</a></p>
+<p>下载后安装在C:\native_client_sdk_0_5_1052</p>
+<p>本次试验的两个关键目录project_templates,examples.其中project_templates包含一个模板代码生成，examples中包含示例代码。</p>
+<p><strong>2、安装python</strong></p>
+<p>下载地址：<a href="http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi">http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi</a><br>下载后安装到C:\Python27，在系统环境变量中的Path最后加上;C:\Python27</p>
+<p><strong>3、在<span style="font-size: xx-small;">chrome</span>中启用native client</strong></p>
+<p>在chrome浏览器中地址栏输入about:flags 找到native client点击启动，重启浏览器；然后在浏览器地址栏输入about:plugins找到native client点击启动，无须重启浏览器</p>
+<p><span style="font-size: medium;"><strong>二、查看示例</strong></span></p>
+<p><span style="font-size: x-small;">进入C:\native_client_sdk_0_5_1052\examples，双击httpd.py，启动python的web server。</span></p>
+<p><span style="font-size: x-small;">在chrome地址栏输入<span style="" class="Apple-style-span"><span style="line-height: 16px; font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span"><a style="color: #0000cc;" href="http://localhost:5103/index.html">http://localhost:5103/index.html</a>,<span style="font-size: x-small;">可查看自带示例。</span></span></span></span></p>
+<p><span style="" class="Apple-style-span"><span style="line-height: 16px; font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span"><span style="font-size: medium;"><strong>三、开发示例</strong></span></span></span></p>
+<p><strong><span style="font-family: Helvetica; font-size: x-small;">1、创建工程</span></strong></p>
+<p><span style="" class="Apple-style-span"><span style="line-height: 16px; font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span"><span style="font-size: x-small;">进入控制台：</span></span></span></p>
+<p><span style="" class="Apple-style-span"><span style="line-height: 16px; font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span"><span style="font-size: x-small;">&gt;cd C:\native_client_sdk_0_5_1052\project_templates</span></span></span></p>
+<p><span style="" class="Apple-style-span"></span>&gt;&nbsp;init_project.py -n helloworld -d ../examples (-n 名称 -d目录)</p>
+<p>这时在examples文件下多了一个helloworld目录。改目录有：</p>
+<p>helloworld.cc c++代码</p>
+<p>helloworld.html 网页代码</p>
+<p>scons.bat 编译C++</p>
+<p><strong>2、修改代码</strong></p>
+<p>打开helloworld.html,新增</p>
+<p><strong><span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+</span></span></strong></p><pre><strong>function moduleDidLoad() {
+      HelloTutorialModule = document.getElementById('hello_tutorial');
+      HelloTutorialModule.addEventListener('message', handleMessage, false);
+      updateStatus('SUCCESS');
+      <strong>//Send a message to the NaCl module.
+      HelloTutorialModule.postMessage('hello');</strong>
+    }</strong></pre><strong>
+<strong><span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+<p>&nbsp;</p>
+</span></span></strong><strong><span style="" class="Apple-style-span">
+<p>&nbsp;</p>
+</span></strong></strong>&nbsp;<p></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size: x-small;"><span style="font-family: arial,helvetica,sans-serif;"><strong>HelloTutorialModule.postMessage('hello');将hello字符串提交给c++端处理</strong></span></span></p>
+<p><span style="font-size: x-small;"><span style="font-family: arial,helvetica,sans-serif;"><strong></strong></span></span>&nbsp;</p>
+<p><span style="font-size: x-small;"><span style="font-family: arial,helvetica,sans-serif;"><strong>打开helloworld.cc</strong></span></span></p>
+<p><span style="font-size: x-small;"><span style="font-family: arial,helvetica,sans-serif;"><strong>在#include之后添加</strong></span></span></p>
+<p><span style="font-size: x-small;"><span style="font-family: arial,helvetica,sans-serif;"><span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+</span></span></span></span></p><pre><strong>namespace {
+// The expected string sent by the browser.
+const char* const kHelloString = "hello";
+// The string sent back to the browser upon receipt of a message
+// containing "hello".
+const char* const kReplyString = "hello from NaCl";
+} // namespace</strong></pre>
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>找到<span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+</span></span></p><pre>// TODO(sdk_user): 1. Make this function handle the incoming message.</pre>
+<span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+<p>&nbsp;</p>
+</span></span><span style="" class="Apple-style-span">
+<p>&nbsp;</p>
+</span><p></p>
+<p>替换成</p>
+<p>&nbsp;</p>
+<p><span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+</span></span></p><pre> <strong>if (!var_message.is_string())
+    return;
+  std::string message = var_message.AsString();
+  pp::Var var_reply;
+  if (message == kHelloString) {
+    var_reply = pp::Var(kReplyString);
+    PostMessage(var_reply);
+  }</strong></pre>
+<span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+<p>&nbsp;</p>
+</span></span><span style="" class="Apple-style-span">
+<p>&nbsp;</p>
+</span><p></p>
+<p>&nbsp;</p>
+<p><br>编译C++的native client module ，双击helloworld目录底下的scons.bat文件。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>编译完成后，生成:</p>
+<p>&nbsp;</p>
+<p><span style="" class="Apple-style-span"><span style="font-family: Helvetica, Arial, sans-serif; font-size: small;" class="Apple-style-span">
+</span></span></p><ul style="padding-bottom: 0px; line-height: 16px; margin: 0.5em 0px 0px 15px; padding-left: 0px; padding-right: 0px; padding-top: 0px;">
+<li style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;">hello_tutorial_x86_32.nexe</code></li>
+<li style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;">hello_tutorial_x86_32_dbg.nexe</code></li>
+<li style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;">hello_tutorial_x86_64.nexe</code></li>
+<li style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;">hello_tutorial_x86_64_dbg.nexe</code></li>
+</ul>
+<p style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;"><span style="color: #000000;">进入C:\native_client_sdk_0_5_1052\examples</span></code></p>
+<p style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;"><span style="color: #000000;">双击httpd.py</span></code></p>
+<p style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;"><span style="color: #000000;">在chrome浏览器中输入地址：<a href="http://localhost:5103/helloworld/helloworld.html"><span style="font-size: small;">http://localhost:5103/helloworld/helloworld.html</span></a></span></code></p>
+<p style="padding-bottom: 0px; margin: 0.3em 0px 0px 1.5em; padding-left: 0px; padding-right: 0px; padding-top: 0px;"><code style="font-family: monospace; color: #007000; font-size: 10pt;"><span style="color: #000000;">得到从native client module返回的hello from NaCl</span></code></p>
+<p></p>
+<p>&nbsp;</p>
+<p></p>
+  </div>
+
+  
+
+  
+  
+  <iframe src="about:blank" scrolling="no" width="0" height="0" frameborder="0" style="display: none !important; visibility: hidden !important; opacity: 0 !important; background-position: 468px 60px;"></iframe>
+  
+  <div id="bottoms" class="clearfix">
+    
+    <div id="share_weibo">分享到：
+      <a data-type="sina" href="javascript:;" title="分享到新浪微博"><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/sina.jpg"></a>
+      <a data-type="qq" href="javascript:;" title="分享到腾讯微博"><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="http://wiselyman.iteye.com/blog/1275089" class="next" title="java web 下载">java web 下载</a>
+      |
+      <a href="http://wiselyman.iteye.com/blog/1156540" class="pre" title="Google Chrome Frame">Google Chrome Frame</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2011-08-25 09:48</li>
+      <li>浏览 3415</li>
+      <li><a href="http://wiselyman.iteye.com/blog/1157551#comments">评论(2)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/web">Web前端</a></li>      
+      <li class="last"><a href="http://www.iteye.com/wiki/blog/1157551" target="_blank" class="more">相关推荐</a></li>
+    </ul>
+  </div>
+
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    <div id="bc2349854">
+  <div class="comment_title">
+    2 楼
+    <a href="http://txbhcml.iteye.com/" target="_blank" title="txbhcml">txbhcml</a>
+    2014-06-04&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">谢谢啊楼主分享&nbsp; google访问太慢了 作为中国程序员效率打了折扣啊</div>
+</div>
+
+<div id="bc2235899">
+  <div class="comment_title">
+    1 楼
+    <a href="http://cheng830306.iteye.com/" target="_blank" title="cheng830306">cheng830306</a>
+    2011-12-16&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">谢。。。。正在找这方面的资料。。。</div>
+</div>
+
+
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align:center; margin-top:30px;margin-bottom:0px;"><a href="http://wiselyman.iteye.com/login" style="background-color:white;"> <img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/login_icon.png" style="vertical-align:middle; margin-right: 10px;"></a><a href="http://wiselyman.iteye.com/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 1157551;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', 'chrome native client小试牛刀');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'chrome native client小试牛刀');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href="http://wiselyman.iteye.com/"><img alt="wiselyman的博客" class="logo" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/904ea3e0-28f9-39c0-b054-914cdc3e12e5.jpg" title="wiselyman的博客: 汪云飞记录本" width=""></a></div>
+  <div id="blog_owner_name">wiselyman</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 130242 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/icon_minigender_1.gif" title="男"></li>
+              <li>来自: 合肥</li>
+              <li><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/offline.gif"></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style="font-weight:normal;font-size:12px;padding-left:30px;"><a href="http://wiselyman.iteye.com/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://coder-man.iteye.com/" target="_blank"><img alt="coder_man的博客" class="logo" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/user-logo-thumb.gif" title="coder_man的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://coder-man.iteye.com/" target="_blank" title="coder_man">coder_man</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://ptma.iteye.com/" target="_blank"><img alt="ptma的博客" class="logo" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/d8a9216e-b51d-350b-97ce-8cd85c7feca8-thumb.png" title="ptma的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://ptma.iteye.com/" target="_blank" title="ptma">ptma</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://thinking.iteye.com/" target="_blank"><img alt="thinking的博客" class="logo" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/user-logo-thumb.gif" title="thinking的博客: thinking" width="48px"></a></div>
+                <div class="left"><a href="http://thinking.iteye.com/" target="_blank" title="thinking">thinking</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://fedora.iteye.com/" target="_blank"><img alt="fedora的博客" class="logo" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/7299b946-b820-33d5-b23d-5d582d9894a1-thumb.jpg" title="fedora的博客: fedora" width="48px"></a></div>
+                <div class="left"><a href="http://fedora.iteye.com/" target="_blank" title="fedora">fedora</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="http://wiselyman.iteye.com/">全部博客 (112)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/64036">groovy&amp;grails (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/64037">gis (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/137338">Linux (12)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/137352">spring (15)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/137362">javascript (0)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/138426">database (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/173291">jquery (4)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/173758">chrome (3)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/191195">java基础 (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/225194">jaxb 复杂类型 对象包含对象 (0)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/247691">java高级 (3)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/247695">hibernate (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/249607">hadoop (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/275968">javascript OOP (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/295530">ESB (0)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/302776">spring4.0系列 (9)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/325391">spring boot (0)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/325448">spring-boot (9)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/325906">PaaS (17)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/326278">OpenSource (1)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/327569">docker (13)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/327748">非技术 (4)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/328884">wget (0)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/329796">fedora21 (5)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/330647">golang (2)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/331146">CloudStack (2)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/331893">tools (2)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/336871">puppet (2)</a></li>
+                
+                  <li><a href="http://wiselyman.iteye.com/category/336873">apache mesos (2)</a></li>
+                
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="http://wiselyman.iteye.com/blog/news">我的资讯</a> (3)</li>
+                <li>
+                  <a href="http://wiselyman.iteye.com/blog/post">我的论坛</a> (0)
+                </li>
+                <li><a href="http://wiselyman.iteye.com/blog/answered_problems">我的问答</a> (0)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="http://wiselyman.iteye.com/blog/monthblog/2015-04">2015-04</a> (7)</li>
+                
+                  <li><a href="http://wiselyman.iteye.com/blog/monthblog/2015-03">2015-03</a> (3)</li>
+                
+                  <li><a href="http://wiselyman.iteye.com/blog/monthblog/2015-02">2015-02</a> (3)</li>
+                
+                <li><a href="http://wiselyman.iteye.com/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+              <div id="comments_top">
+                <h5>评论排行榜</h5>
+                <ul>
+                  
+                    <li><a href="http://wiselyman.iteye.com/blog/2151813" title="平台云基石-CoreOS之离线安装篇（无需互联网）">平台云基石-CoreOS之离线安装篇（无需互联 ...</a></li>
+                  
+                    <li><a href="http://wiselyman.iteye.com/blog/2146475" title="Spring Boot + Spring-loaded 热部署">Spring Boot + Spring-loaded 热部署</a></li>
+                  
+                    <li><a href="http://wiselyman.iteye.com/blog/2145442" title="Spring Boot由jar包转成war包">Spring Boot由jar包转成war包</a></li>
+                  
+                    <li><a href="http://wiselyman.iteye.com/blog/2166459" title="吐血力作：平台云deis之安装CoreOS集群">吐血力作：平台云deis之安装CoreOS集群</a></li>
+                  
+                    <li><a href="http://wiselyman.iteye.com/blog/2204409" title="CentOS7/fedora21防火墙的使用">CentOS7/fedora21防火墙的使用</a></li>
+                  
+                </ul>
+              </div>
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href="http://wiselyman.iteye.com/" target="_blank" title="wiselyman">wiselyman</a>： 
+                  yixiandave 写道iptables不用了吗？可以废掉f ...<br>
+                  <a href="http://wiselyman.iteye.com/blog/2204409#bc2370743">CentOS7/fedora21防火墙的使用</a>
+                </li>
+                
+                <li>
+                  <a href="http://yixiandave.iteye.com/" target="_blank" title="yixiandave">yixiandave</a>： 
+                  iptables不用了吗？<br>
+                  <a href="http://wiselyman.iteye.com/blog/2204409#bc2370738">CentOS7/fedora21防火墙的使用</a>
+                </li>
+                
+                <li>
+                  <a href="http://strawren.iteye.com/" target="_blank" title="strawren">strawren</a>： 
+                  解决问题了，非常感谢<br>
+                  <a href="http://wiselyman.iteye.com/blog/2146475#bc2370430">Spring Boot + Spring-loaded 热部署</a>
+                </li>
+                
+                <li>
+                  <a href="http://string2020.iteye.com/" target="_blank" title="string2020">string2020</a>： 
+                  @RestController和@Controller&nbsp;&nbsp; 有 ...<br>
+                  <a href="http://wiselyman.iteye.com/blog/2002446#bc2368757">Spring4.0系列3-@RestController</a>
+                </li>
+                
+                <li>
+                  <a href="http://bhg163.iteye.com/" target="_blank" title="bhg163">bhg163</a>： 
+                  安装的时候报个错，请问这是什么原因照成的?Downloadin ...<br>
+                  <a href="http://wiselyman.iteye.com/blog/2151813#bc2367785">平台云基石-CoreOS之离线安装篇（无需互联网）</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+      </div>
+
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br>
+          © 2003-2015 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/saved_resource" width="0" height="0">
+
+<script src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/tracking.js" type="text/javascript"></script>
+
+    
+<script type="text/javascript" src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/tongji.js"></script><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/tongji.do" border="0" width="1" height="1"><a href="http://tongji.linezing.com/report.html?unit_id=3539111" target="_blank"><img src="./chrome native client小试牛刀 - 汪云飞记录本 - ITeye技术网站_files/icon1.gif" border="0" alt="量子统计"></a>
+      
+    
+  
+
+</body></html>
